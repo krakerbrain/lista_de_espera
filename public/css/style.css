@@ -1,3 +1,6 @@
+html {
+  font-size: 1rem;
+}
 .info-container {
   max-width: 600px;
   margin: 0 auto;
@@ -6,7 +9,6 @@
 }
 
 h2 {
-  font-size: 24px;
   margin-bottom: 10px;
 }
 
@@ -38,7 +40,7 @@ input[type="text"] {
   border: none;
   margin-bottom: 15px;
   width: 250px;
-  font-size: 16px;
+  font-size: 1rem;
 }
 
 input[type="submit"] {
@@ -64,10 +66,16 @@ ul {
 a {
   color: #2196f3;
   text-decoration: none;
-  font-size: 16px;
+  font-size: 1rem;
   margin-top: 10px;
 }
 #mensaje_retorno,
 p {
   padding-bottom: 5px;
+}
+
+@media (max-width: 576px) {
+  html {
+    font-size: 14px;
+  }
 }
