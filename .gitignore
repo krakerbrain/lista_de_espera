@@ -1,0 +1,6 @@
+/credentials
+/public/js/app.js
+.env
+/node_modules
+package.json
+package-lock.json
