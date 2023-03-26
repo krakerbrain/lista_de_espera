@@ -46,7 +46,7 @@ async function getSheetData(sheet, nombre) {
   for (let i = lastMarioIndex - 1; i >= 0 && i < nextTrueIndex; i--) {
     if (response.data.values[i][0] === "FALSE") {
       falseCount++;
-      if (falseNames.length < 5) {
+      if (falseNames.length < 9) {
         falseNames.push(response.data.values[i][1]);
         falseNamesPositions.push(i + 3); // Sumar 3 para ajustar el índice de base cero
       }

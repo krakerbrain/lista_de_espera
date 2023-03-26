@@ -7,7 +7,7 @@ choferes deben acceder a esta hoja a través de un link que está en un grupo de
 
 ## Expectativas
 
-Lo que se busca con este proyecto es hacer más fácil esta búsqueda usando la API de Google Sheets para consultar los datos y mostrar al chofer la posición en que se encuentra en la lista, cuanto falta para su turno y cuáles son las 5 personas que están esperando antes que él.
+Lo que se busca con este proyecto es hacer más fácil esta búsqueda usando la API de Google Sheets para consultar los datos y mostrar al chofer la posición en que se encuentra en la lista, cuanto falta para su turno , cuáles son las 9 personas que están esperando antes que él y un link que te lleva a la hoja actual y a la celda donde estas registrado
 
 ## Explicación técnica
 
@@ -55,6 +55,12 @@ src/: Esta carpeta contiene los archivos fuente de la aplicación.
 getSheetData.js: Este archivo contiene el código del servidor Node.js que se encarga de manejar las solicitudes HTTP y de analizar las hojas de cálculo.
 public/: Esta carpeta contiene los archivos públicos de la aplicación, como los archivos CSS y JavaScript que se utilizan en la página web.
 package.json: Este archivo define las dependencias del proyecto y otros metadatos de la aplicación.
+
+## Vista cliente
+
+En vez de mostrar toda una hoja de excel con 300 o más filas se mostraría una imagen como esta:
+
+![Vista Cliente](/readme_img/vista_cliente.jpg);
 
 ## Notas Finales
 
