@@ -60,7 +60,7 @@ package.json: Este archivo define las dependencias del proyecto y otros metadato
 
 En vez de mostrar toda una hoja de excel con 300 o más filas se mostraría una imagen como esta:
 
-![Vista Cliente](/readme_img/vista_cliente.jpg);
+![Vista Cliente](/readme_img/vista_cliente.jpg)
 
 ## Notas Finales
 

@@ -3,7 +3,7 @@ const express = require("express");
 const app = express();
 const port = process.env.PORT || 3000;
 const path = require("path");
-const { getSheetData } = require("./getSheetData.js");
+const { getSheetData, getUniqueNames } = require("./getSheetData.js");
 const bodyParser = require("body-parser");
 
 const HTML_DIR = path.join(__dirname, "/../public/");
@@ -21,6 +21,14 @@ app.post("/get-sheet-data", async (req, res) => {
   const { user, sheet } = req.body;
   const sheetData = await getSheetData(sheet, user);
   res.send(sheetData);
+});
+
+// ruta para obtener la lista de nombres
+app.get("/get-nombres", async (req, res) => {
+  const { sheet } = req.query;
+  const sheetData = await getUniqueNames(sheet);
+  // console.log("index", sheetData);
+  res.json(sheetData);
 });
 
 // Iniciamos el servidor en el puerto 3000

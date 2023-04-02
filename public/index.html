@@ -13,13 +13,22 @@
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css" />
     <script src="//code.jquery.com/jquery-1.12.4.js"></script>
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <!-- Incluye la librería Awesomplete -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.3/awesomplete.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.3/awesomplete.min.js"></script>
   </head>
+  <style>
+    .awesomplete mark {
+      background: hsl(190.3deg 39.44% 49.22%);
+    }
+  </style>
   <body>
     <div class="info-container">
       <h2>Lista de espera Boosmap</h2>
       <form action="/get-sheet-data" method="POST" id="form-datos">
         <label for="nombre-usuario">Nombre de usuario:</label>
-        <input type="text" id="nombre_usuario" name="nombre-usuario" value="MARIO MONTENEGRO" /><br />
+        <input type="text" id="nombre_usuario" name="nombre-usuario" placeholder="MARIO MONTENEGRO" />
+        <br />
         <label for="nombre-hoja">Nombre de la hoja:</label>
         <input type="text" id="nombre_hoja" name="nombre-hoja" data-date-format="dd-mm" class="datepicker" />
         <br />

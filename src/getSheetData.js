@@ -10,6 +10,7 @@ async function getSheetData(sheet, nombre) {
   const sheets = google.sheets({ version: "v4", auth });
   const sheet_name = sheet;
   const sheetGid = await getSheetGid(sheet);
+  // const uniqueNames = await getUniqueNames(sheet_name, "B");
   const range = sheet_name + "!A3:B500";
 
   const response = await sheets.spreadsheets.values.get({
@@ -79,4 +80,23 @@ async function getSheetGid(sheetName) {
   }
 }
 
-module.exports = { getSheetData };
+async function getUniqueNames(sheet) {
+  const auth = new google.auth.GoogleAuth({
+    credentials,
+    scopes: ["https://www.googleapis.com/auth/spreadsheets"],
+  });
+
+  const sheets = google.sheets({ version: "v4", auth });
+  const sheet_name = sheet;
+  const range = sheet_name + "!B2:B";
+
+  const response = await sheets.spreadsheets.values.get({
+    spreadsheetId: process.env.SPREADSHEET_ID,
+    range: range,
+  });
+
+  const namesSet = new Set(response.data.values.flat());
+  const uniqueNames = Array.from(namesSet);
+  return uniqueNames;
+}
+module.exports = { getSheetData, getUniqueNames };
