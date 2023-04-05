@@ -6,6 +6,7 @@ html {
   margin: 0 auto;
   padding: 20px;
   font-family: "Roboto", sans-serif;
+  font-weight: 600;
 }
 
 h2 {
@@ -61,6 +62,17 @@ ul {
   list-style: none;
   padding: 0;
   margin-bottom: 5px;
+}
+
+#ultima_salida li span {
+  background: #9900ff;
+  padding-right: 10px;
+  padding-left: 10px;
+  margin: 5px;
+}
+
+#ultima_salida li span i {
+  color: white;
 }
 
 a {

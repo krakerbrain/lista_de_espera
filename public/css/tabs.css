@@ -1,0 +1,37 @@
+.tabs {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  overflow: hidden;
+  margin-top: 15px;
+}
+
+.tab {
+  float: left;
+}
+
+.tab button {
+  background-color: #f2f2f2;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 10px 20px;
+  transition: background-color 0.3s ease;
+}
+
+.tab button:hover {
+  background-color: #ddd;
+}
+
+.tabcontent {
+  display: none;
+  padding-top: 40px;
+  padding-left: 10px;
+}
+
+.tabcontent.show {
+  display: block;
+}
+
+.tablinks.active {
+  background-color: #4c9eaf;
+}
