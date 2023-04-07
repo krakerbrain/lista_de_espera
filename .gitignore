@@ -7,3 +7,4 @@ package-lock.json
 fly.toml
 Dockerfile
 .dockerignore
+/pruebas

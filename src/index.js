@@ -3,7 +3,7 @@ const express = require("express");
 const app = express();
 const port = process.env.PORT || 3000;
 const path = require("path");
-const { getSheetData, getUniqueNames, getFalseUntilLastUser } = require("./getSheetData.js");
+const { getSheetData, getUniqueNames, getFalseUntilLastUser, getFalseUsersUntilFirstTrue, getSheetGid } = require("./getSheetData.js");
 const bodyParser = require("body-parser");
 
 const HTML_DIR = path.join(__dirname, "/../public/");
@@ -27,13 +27,24 @@ app.post("/get-sheet-data", async (req, res) => {
 app.get("/get-nombres", async (req, res) => {
   const { sheet } = req.query;
   const sheetData = await getUniqueNames(sheet);
-  // console.log("index", sheetData);
+  res.json(sheetData);
+});
+
+app.post("/get-gid", async (req, res) => {
+  const { sheet } = req.body;
+  const sheetData = await getSheetGid(sheet);
+  console.log(sheetData);
+  res.json(sheetData);
+});
+
+app.post("/get-todo-chofer", async (req, res) => {
+  const { user, sheet } = req.body;
+  const sheetData = await getFalseUntilLastUser(sheet, user);
   res.json(sheetData);
 });
 app.post("/get-todo", async (req, res) => {
   const { user, sheet } = req.body;
-  const sheetData = await getFalseUntilLastUser(sheet, user);
-  // console.log("index", sheetData);
+  const sheetData = await getFalseUsersUntilFirstTrue(sheet);
   res.json(sheetData);
 });
 

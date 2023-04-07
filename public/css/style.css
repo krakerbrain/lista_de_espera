@@ -62,16 +62,19 @@ ul {
   list-style: none;
   padding: 0;
   margin-bottom: 5px;
+  font-size: 0.9rem;
 }
 
-#ultima_salida li span {
+#ultima_salida li span,
+#lista_completa li span {
   background: #9900ff;
   padding-right: 10px;
   padding-left: 10px;
   margin: 5px;
 }
 
-#ultima_salida li span i {
+#ultima_salida li span i,
+#lista_completa li span {
   color: white;
 }
 

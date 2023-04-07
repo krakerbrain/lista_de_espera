@@ -1,32 +1,59 @@
 const { google } = require("googleapis");
+const fs = require("fs");
+const xlsx = require("xlsx");
 const credentials = require(process.env.GOOGLE_APPLICATION_CREDENTIALS);
 
-async function getAllSheetData(sheet) {
-  const auth = new google.auth.GoogleAuth({
-    credentials,
-    scopes: ["https://www.googleapis.com/auth/spreadsheets"],
-  });
+async function getAllSheetData(sheet, isDevMode = false) {
+  let auth;
+  if (isDevMode) {
+    const workbook = xlsx.readFile("./pruebas/ubicacion.xlsx");
+    const sheet = workbook.Sheets["prueba"];
+    const sheetData = xlsx.utils.sheet_to_json(sheet, { header: 1 });
 
-  const sheets = google.sheets({ version: "v4", auth });
-  const sheet_name = sheet;
-  const range = sheet_name + "!A:B";
+    return sheetData
+      .slice(1)
+      .map((row) => {
+        const active = row[0] === 1;
+        const name = row[1] || ""; // Usar una cadena vacía si el valor es nulo o indefinido
 
-  const response = await sheets.spreadsheets.values.get({
-    spreadsheetId: process.env.SPREADSHEET_ID,
-    range: range,
-  });
+        // Verificar si el campo "name" no está vacío antes de incluirlo en el resultado
+        if (name.trim() !== "") {
+          return {
+            active,
+            name,
+          };
+        }
 
-  return response.data.values.slice(2).map((row) => {
-    return {
-      active: row[0] === "TRUE",
-      name: row[1],
-    };
-  });
+        return null; // Omitir filas con campos vacíos
+      })
+      .filter(Boolean); // Filtrar los resultados nulos generados por las filas con campos vacíos
+  } else {
+    // En producción, utiliza las credenciales del entorno
+    auth = new google.auth.GoogleAuth({
+      credentials,
+      scopes: ["https://www.googleapis.com/auth/spreadsheets"],
+    });
+
+    const sheets = google.sheets({ version: "v4", auth });
+    const sheet_name = sheet;
+    const range = sheet_name + "!A:B";
+
+    const response = await sheets.spreadsheets.values.get({
+      spreadsheetId: process.env.SPREADSHEET_ID,
+      range: range,
+    });
+
+    return response.data.values.slice(2).map((row) => {
+      return {
+        active: row[0] === "TRUE",
+        name: row[1],
+      };
+    });
+  }
 }
 
 async function getSheetData(sheet, nombre) {
   const sheetData = await getAllSheetData(sheet);
-  let falseCount = 0;
   let lastMarioIndex = -1;
   let nextTrueIndex = sheetData.length;
   const nombre_usuario = nombre;
@@ -54,72 +81,15 @@ async function getSheetData(sheet, nombre) {
   // Contar el número de usuarios en "FALSE" hasta el próximo "TRUE" después del último "MARIO MONTENEGRO"
   for (let i = lastMarioIndex - 1; i >= 0 && i < nextTrueIndex; i--) {
     if (sheetData[i].active === false) {
-      falseCount++;
-      if (falseNames.length < 9) {
-        falseNames.push(sheetData[i].name);
-        falseNamesPositions.push(i + 3); // Sumar 3 para ajustar el índice de base cero
-      }
+      falseNames.push(sheetData[i].name);
+      falseNamesPositions.push(i + 2); // Sumar 2 para ajustar el índice de base cero
+    } else {
+      break; // Detener el bucle cuando se encuentre el primer "TRUE"
     }
   }
 
-  return { falseCount, falseNames, falseNamesPositions };
+  return { falseCount: falseNames.length, falseNames, falseNamesPositions };
 }
-
-// async function getSheetData(sheet, nombre) {
-//   const auth = new google.auth.GoogleAuth({
-//     credentials,
-//     scopes: ["https://www.googleapis.com/auth/spreadsheets"],
-//   });
-
-//   const sheets = google.sheets({ version: "v4", auth });
-//   const sheet_name = sheet;
-//   const sheetGid = await getSheetGid(sheet);
-//   // const uniqueNames = await getUniqueNames(sheet_name, "B");
-//   const range = sheet_name + "!A3:B500";
-
-//   const response = await sheets.spreadsheets.values.get({
-//     spreadsheetId: process.env.SPREADSHEET_ID,
-//     range: range,
-//   });
-
-//   let falseCount = 0;
-//   let lastMarioIndex = -1;
-//   let nextTrueIndex = response.data.values.length;
-//   const nombre_usuario = nombre;
-//   const falseNames = [];
-//   const falseNamesPositions = [];
-
-//   // Buscar el índice del último "MARIO MONTENEGRO"
-//   for (let i = response.data.values.length - 1; i >= 0; i--) {
-//     if (response.data.values[i][1] === nombre_usuario) {
-//       lastMarioIndex = i;
-//       break;
-//     }
-//   }
-
-//   // Buscar el índice del próximo "TRUE" después del último "MARIO MONTENEGRO"
-//   if (lastMarioIndex !== -1) {
-//     for (let i = lastMarioIndex + 1; i < response.data.values.length; i++) {
-//       if (response.data.values[i][0] === "TRUE") {
-//         nextTrueIndex = i;
-//         break;
-//       }
-//     }
-//   }
-
-//   // Contar el número de usuarios en "FALSE" hasta el próximo "TRUE" después del último "MARIO MONTENEGRO"
-//   for (let i = lastMarioIndex - 1; i >= 0 && i < nextTrueIndex; i--) {
-//     if (response.data.values[i][0] === "FALSE") {
-//       falseCount++;
-//       if (falseNames.length < 9) {
-//         falseNames.push(response.data.values[i][1]);
-//         falseNamesPositions.push(i + 3); // Sumar 3 para ajustar el índice de base cero
-//       }
-//     }
-//   }
-
-//   return { falseCount, falseNames, falseNamesPositions, sheetGid };
-// }
 
 async function getSheetGid(sheetName) {
   const auth = new google.auth.GoogleAuth({
@@ -136,7 +106,6 @@ async function getSheetGid(sheetName) {
   });
 
   const sheet = response.data.sheets.find((sheet) => sheet.properties.title === sheetName);
-
   if (sheet) {
     return sheet.properties.sheetId;
   } else {
@@ -196,4 +165,38 @@ async function getFalseUntilLastUser(sheet, nombre) {
   };
 }
 
-module.exports = { getSheetData, getUniqueNames, getFalseUntilLastUser };
+async function getFalseUsersUntilFirstTrue(sheet) {
+  const sheetData = await getAllSheetData(sheet);
+  const falseNames = [];
+  const falseNamesRows = [];
+
+  // Buscar el índice del primer "TRUE" desde abajo hacia arriba
+  let firstTrueIndex = -1;
+  for (let i = sheetData.length - 1; i >= 0; i--) {
+    if (sheetData[i].active === true) {
+      firstTrueIndex = i;
+      break;
+    }
+  }
+
+  // Recorrer los datos desde abajo hacia arriba hasta el primer "TRUE"
+  for (let i = sheetData.length - 1; i > firstTrueIndex; i--) {
+    if (sheetData[i].active === false) {
+      falseNames.push(sheetData[i].name);
+      falseNamesRows.push(i + 2); // La fila en Sheets es el índice en el array + 2
+    }
+  }
+
+  return {
+    firstTrueName: {
+      name: sheetData[firstTrueIndex]?.name || null,
+      row: firstTrueIndex !== -1 ? firstTrueIndex + 2 : null, // La fila en Sheets es el índice en el array + 2
+    },
+    falseNames: falseNames.map((name, index) => ({
+      name: name,
+      row: falseNamesRows[index],
+    })),
+  };
+}
+
+module.exports = { getSheetData, getUniqueNames, getFalseUntilLastUser, getFalseUsersUntilFirstTrue, getSheetGid };
