@@ -33,7 +33,7 @@
         <small id="alert" style="color: red; display: none">*Debe ingresar un chofer con nombre y apellido</small>
         <br />
         <!-- <label for="nombre-hoja">Nombre de la hoja:</label> -->
-        <input type="text" id="nombre_hoja" name="nombre-hoja" data-date-format="dd-mm" class="datepicker" />
+        <input type="hidden" id="nombre_hoja" name="nombre-hoja" data-date-format="dd-mm" class="datepicker" />
         <br />
         <!-- <input type="submit" value="Obtener Datos" /> -->
       </form>
@@ -42,29 +42,30 @@
           <button id="resumen" class="tablinks" onclick="openTab(event, 'tab1')">RESUMEN</button>
         </div>
         <div class="tab">
-          <button id="listacompleta" class="tablinks" onclick="openTab(event, 'tab2')">LISTA A CHOFER</button>
+          <button id="listachofer" class="tablinks" onclick="openTab(event, 'tab2')">LISTA A CHOFER</button>
         </div>
         <div class="tab">
-          <button id="listacompleta2" class="tablinks" onclick="openTab(event, 'tab3')">LISTA COMPLETA</button>
+          <button id="listacompleta" class="tablinks" onclick="openTab(event, 'tab3')">LISTA COMPLETA</button>
         </div>
         <div id="tab1" class="tabcontent">
           <div>
             <div id="mensaje_retorno"></div>
             <ul id="lista_espera"></ul>
+            <div id="linkHojaCompleta"></div>
           </div>
         </div>
         <div id="tab2" class="tabcontent">
           <ul id="ultima_salida"></ul>
         </div>
+        <div id="linkHojaCompleta"></div>
         <div id="tab3" class="tabcontent">
           <ul id="lista_completa"></ul>
           <div style="display: flex; justify-content: center; align-items: center; height: 100%">
             <img src="./img/Spinner-1s-200px.gif" alt="" id="loader" style="max-width: 100px; max-height: 100px" />
           </div>
+          <div id="linkHojaCompleta"></div>
         </div>
       </div>
-      <br />
-      <span>Ver la hoja completa <a id="link_hoja" target="_blank">Aqui</a></span>
     </div>
     <script src="./js/app.js"></script>
     <script src="./js/campofecha.js"></script>

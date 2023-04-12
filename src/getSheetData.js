@@ -43,12 +43,15 @@ async function getAllSheetData(sheet, isDevMode = false) {
       range: range,
     });
 
-    return response.data.values.slice(2).map((row) => {
-      return {
-        active: row[0] === "TRUE",
-        name: row[1],
-      };
-    });
+    return response.data.values
+      .slice(2)
+      .filter((row) => row[1] !== undefined && row[1] !== "") // Filtrar filas donde la columna "name" no esté vacía o sea undefined
+      .map((row) => {
+        return {
+          active: row[0] === "TRUE",
+          name: row[1] !== undefined ? row[1] : "", // Usar una cadena vacía si el valor es undefined
+        };
+      });
   }
 }
 
@@ -82,7 +85,7 @@ async function getSheetData(sheet, nombre) {
   for (let i = lastMarioIndex - 1; i >= 0 && i < nextTrueIndex; i--) {
     if (sheetData[i].active === false) {
       falseNames.push(sheetData[i].name);
-      falseNamesPositions.push(i + 2); // Sumar 2 para ajustar el índice de base cero
+      falseNamesPositions.push(i + 3); // Sumar 2 para ajustar el índice de base cero
     } else {
       break; // Detener el bucle cuando se encuentre el primer "TRUE"
     }
@@ -129,6 +132,28 @@ async function getFalseUntilLastUser(sheet, nombre) {
   let lastTrueNameRow = null;
   let falseNamesRows = [];
 
+  // Buscar el índice del primer "TRUE" desde abajo hacia arriba
+  let firstTrueIndex = -1;
+  for (let i = sheetData.length - 1; i >= 0; i--) {
+    if (sheetData[i].active === true) {
+      firstTrueIndex = i;
+      break;
+    }
+  }
+
+  const endRow = firstTrueIndex;
+  const startRow = Math.max(0, endRow - 4);
+  const truePeople = [];
+
+  // Agregar las filas con "TRUE" en el resultado
+  for (let i = endRow; i >= startRow; i--) {
+    const { active, ...data } = sheetData[i];
+    truePeople.push({
+      ...data,
+      row: i + 3, // La fila en Sheets es el índice en el array + 2
+    });
+  }
+
   // Buscar el índice de la última vez que se anotó el usuario consultado
   for (let i = sheetData.length - 1; i >= 0; i--) {
     if (sheetData[i].name === nombre) {
@@ -142,20 +167,17 @@ async function getFalseUntilLastUser(sheet, nombre) {
     for (let i = lastMarioIndex; i >= 0; i--) {
       if (sheetData[i].active === true) {
         lastTrueName = sheetData[i].name;
-        lastTrueNameRow = i + 2; // La fila en Sheets es el índice en el array + 2
+        lastTrueNameRow = i + 3; // La fila en Sheets es el índice en el array + 2
         break;
       } else {
         falseNames.push(sheetData[i].name);
-        falseNamesRows.push(i + 2); // La fila en Sheets es el índice en el array + 2
+        falseNamesRows.push(i + 3); // La fila en Sheets es el índice en el array + 2
       }
     }
   }
 
   return {
-    lastTrueName: {
-      name: lastTrueName,
-      row: lastTrueNameRow,
-    },
+    truePeople: truePeople.reverse(), // Cambiar la variable que se retorna
     falseNames: falseNames
       .map((name, index) => ({
         name: name,
@@ -179,22 +201,35 @@ async function getFalseUsersUntilFirstTrue(sheet) {
     }
   }
 
+  const endRow = firstTrueIndex;
+  const startRow = Math.max(0, endRow - 4);
+  const truePeople = [];
+
+  // Agregar las filas con "TRUE" en el resultado
+  for (let i = endRow; i >= startRow; i--) {
+    const { active, ...data } = sheetData[i];
+    truePeople.push({
+      ...data,
+      row: i + 3, // La fila en Sheets es el índice en el array + 2
+    });
+  }
+
   // Recorrer los datos desde abajo hacia arriba hasta el primer "TRUE"
   for (let i = sheetData.length - 1; i > firstTrueIndex; i--) {
     if (sheetData[i].active === false) {
       falseNames.push(sheetData[i].name);
-      falseNamesRows.push(i + 2); // La fila en Sheets es el índice en el array + 2
+      falseNamesRows.push(i + 3); // La fila en Sheets es el índice en el array + 2
     }
   }
 
   return {
-    firstTrueName: {
-      name: sheetData[firstTrueIndex]?.name || null,
-      row: firstTrueIndex !== -1 ? firstTrueIndex + 2 : null, // La fila en Sheets es el índice en el array + 2
-    },
     falseNames: falseNames.map((name, index) => ({
       name: name,
       row: falseNamesRows[index],
+    })),
+    truePeople: truePeople.map((data) => ({
+      ...data,
+      row: data.row,
     })),
   };
 }
