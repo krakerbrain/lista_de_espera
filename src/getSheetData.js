@@ -45,11 +45,11 @@ async function getAllSheetData(sheet, isDevMode = false) {
 
     return response.data.values
       .slice(2)
-      .filter((row) => row[1] !== undefined && row[1] !== "") // Filtrar filas donde la columna "name" no esté vacía o sea undefined
+      .filter((row) => row[1] !== undefined && row[1].trim() !== "") // Filtrar filas donde la columna "name" no esté vacía o sea undefined
       .map((row) => {
         return {
           active: row[0] === "TRUE",
-          name: row[1] !== undefined ? row[1] : "", // Usar una cadena vacía si el valor es undefined
+          name: row[1] !== undefined ? row[1].trim() : "", // Usar una cadena vacía si el valor es undefined
         };
       });
   }

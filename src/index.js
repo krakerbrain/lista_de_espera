@@ -33,7 +33,6 @@ app.get("/get-nombres", async (req, res) => {
 app.post("/get-gid", async (req, res) => {
   const { sheet } = req.body;
   const sheetData = await getSheetGid(sheet);
-  console.log(sheetData);
   res.json(sheetData);
 });
 
