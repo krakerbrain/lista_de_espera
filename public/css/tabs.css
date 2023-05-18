@@ -14,24 +14,24 @@
   border: none;
   outline: none;
   cursor: pointer;
-  padding: 10px 11px;
+  padding: 10px 8px;
   transition: background-color 0.3s ease;
 }
 
-.tab button:hover {
+/* .tab button:hover {
   background-color: #ddd;
-}
+} */
 
 .tabcontent {
   display: none;
-  padding-top: 40px;
+  padding-top: 10px;
   padding-left: 10px;
 }
 
-.tabcontent.show {
+.tabcontent .show {
   display: block;
 }
 
-.tablinks.active {
+.tab .active {
   background-color: #4c9eaf;
 }

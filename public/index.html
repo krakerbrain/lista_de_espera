@@ -30,7 +30,14 @@
       <h2>Lista de espera Boosmap</h2>
       <form action="/get-sheet-data" method="POST" id="form-datos">
         <label for="nombre-usuario">Nombre de chofer:</label>
-        <input type="text" id="nombre_usuario" name="nombre-usuario" placeholder="Ejemplo: Juan Pérez" title="Inserte nombre del chofer" />
+        <input
+          type="text"
+          id="nombre_usuario"
+          name="nombre-usuario"
+          onkeydown="if (event.keyCode === 13) { openTab(event, 'tab1'); }"
+          placeholder="Ejemplo: Juan Pérez"
+          title="Inserte nombre del chofer"
+        />
         <small id="alert" style="color: red; display: none">*Debe ingresar un chofer con nombre y apellido</small>
         <br />
         <!-- <label for="nombre-hoja">Nombre de la hoja:</label> -->
@@ -40,30 +47,39 @@
       </form>
 
       <div class="tabs">
-        <div class="tab">
-          <button id="resumen" class="tablinks" onclick="openTab(event, 'tab1')">RESUMEN</button>
-        </div>
-        <div class="tab">
-          <button id="listachofer" class="tablinks" onclick="openTab(event, 'tab2')">LISTA A CHOFER</button>
-        </div>
-        <div class="tab">
-          <button id="listacompleta" class="tablinks" onclick="openTab(event, 'tab3')">LISTA COMPLETA</button>
+        <div style="display: flex">
+          <div class="tab">
+            <button id="resumen" class="tablinks" onclick="openTab(event, 'tab1')" style="height: 100%">RESUMEN</button>
+          </div>
+          <div class="tab">
+            <button id="listachofer" class="tablinks" onclick="openTab(event, 'tab2')">LISTA A CHOFER</button>
+          </div>
+          <div class="tab">
+            <button id="listacompleta" class="tablinks" onclick="openTab(event, 'tab3')">LISTA COMPLETA</button>
+          </div>
         </div>
         <div id="tab1" class="tabcontent">
           <div>
-            <div id="mensaje_retorno"></div>
+            <div class="mensaje_retorno"></div>
             <ul id="lista_espera"></ul>
+            <div class="loader">
+              <img src="./img/Spinner-1s-200px.gif" alt="" id="loader_tab_1" />
+            </div>
             <div id="linkHojaCompleta"></div>
           </div>
         </div>
         <div id="tab2" class="tabcontent">
+          <div class="mensaje_retorno"></div>
           <ul id="ultima_salida"></ul>
+          <div class="loader">
+            <img src="./img/Spinner-1s-200px.gif" alt="" id="loader_tab_2" />
+          </div>
+          <div id="linkHojaCompleta"></div>
         </div>
-        <div id="linkHojaCompleta"></div>
         <div id="tab3" class="tabcontent">
           <ul id="lista_completa"></ul>
-          <div style="display: flex; justify-content: center; align-items: center; height: 100%">
-            <img src="./img/Spinner-1s-200px.gif" alt="" id="loader" style="max-width: 100px; max-height: 100px" />
+          <div class="loader">
+            <img src="./img/Spinner-1s-200px.gif" alt="" id="loader_tab_3" />
           </div>
           <div id="linkHojaCompleta"></div>
         </div>
@@ -114,6 +130,7 @@
         if (target != "submit") {
           event.currentTarget.classList.add("active");
         }
+        cargarData(event);
       }
     </script>
   </body>
